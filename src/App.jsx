@@ -5,47 +5,63 @@ import ChatBar from './ChatBar.jsx';
 
 class App extends Component {
 
-
   constructor(props) {
     super(props);
     this.state = {
       currentUser: {name: ''}, // optional. if currentUser is not defined, it means the user is Anonymous
-      messages: [
-        {
-          username: "Bob",
-          content: "Has anyone seen my marbles?",
-        },
-        {
-          username: "Anonymous",
-          content: "No, I think you lost them. You lost your marbles Bob. You lost them for good."
-        }
-      ]
+      messages: []
     };
     this.addNewMsg = this.addNewMsg.bind(this);
+    this.sendNotification = this.sendNotification.bind(this);
+  }
+
+  addNewMsg(content) {
+    let message = {
+      username: this.state.currentUser.name,
+      content: content,
+      type: "postMessage"
+    };
+      // Update the state of the app component.
+    this.socket.send(JSON.stringify(message));
+  }
+
+  sendNotification(newUsername){
+    if(this.state.currentUser.name !== newUsername){
+      const sysAlert = `${this.state.currentUser.name} has changed their name to ${newUsername}`;
+      let message = {
+        type: "postNotification",
+        content: sysAlert
+      };
+      const newState = {...this.state, currentUser:{name: newUsername}};
+      this.setState(newState);
+      this.socket.send(JSON.stringify(message));
+    }
   }
 
   componentDidMount() {
-    this.socket = new WebSocket("ws://localhost:3001");
-    console.log("Connected to server");
     console.log("componentDidMount <App />");
-    // this.socket.onmessage = function(event) {
-    //   console.log(event);
-    //   // const newMessage = {id: Date.now(), username: username, content: content};
-    //   // const messages = this.state.messages.concat(newMessage);
-    //   // this.socket.send(JSON.stringify(newMessage));
-    //   // this.setState({messages: messages});
+    this.socket = new WebSocket("ws://localhost:3001");
 
-    // }
-  }
+    this.socket.onopen = (event) => {
+      console.log("Connected to server");
+    }
 
-  addNewMsg(username, content) {
-    const message = {id: Date.now(), username: username, content: content};
-    const messages = this.state.messages.concat(message);
-      // Update the state of the app component.
-      // Calling setState will trigger a call to render() in App and all child components.
-    // this.setState({messages: messages});
-    this.socket.send(JSON.stringify(message));
-
+    this.socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log(data.type);
+      console.log(data);
+      this.setState({messages:this.state.messages.concat(data)});
+      // switch(data.type) {
+      //   case "incomingMessage":
+      //     this.setState({messages:this.state.messages.concat(data)});
+      //     break;
+      //   case "incomingNotification":
+      //     this.setState({messages:this.state.messages.concat(data)});
+      //     break;
+      //   default:
+      //     throw new Error("Unknown event type " + data.type);
+      // }
+    }
   }
 
   render() {
@@ -55,8 +71,12 @@ class App extends Component {
         <nav className="navbar">
           <a href="/" className="navbar-brand">Chatty</a>
         </nav>
-        <MessageList messages={this.state.messages}/>
-        <ChatBar currentUser={this.state.currentUser} addNewMsg={this.addNewMsg}/>
+        <MessageList messages={this.state.messages} />
+        <ChatBar
+          currentUser={this.state.currentUser}
+          addNewMsg={this.addNewMsg}
+          sendNotification={this.sendNotification}
+        />
       </div>
 
     );
