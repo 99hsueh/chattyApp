@@ -4,14 +4,22 @@ import ChatBar from './ChatBar.jsx';
 import Showusers from './Showusers.jsx';
 
 
+
+
+
+
+
 class App extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      currentUser: {name: 'Anonymous'},
+      currentUser: {
+        name: 'Anonymous'
+      },
       messages: [],
-      numOfUsers: {}
+      numOfUsers: {},
+      chosenColor: {}
     };
     this.addNewMsg = this.addNewMsg.bind(this);
     this.sendNotification = this.sendNotification.bind(this);
@@ -21,7 +29,8 @@ class App extends Component {
     let message = {
       username: this.state.currentUser.name,
       content: content,
-      type: "postMessage"
+      type: "postMessage",
+      colors: this.state.chosenColor.colors
     };
       // Update the state of the app component.
     this.socket.send(JSON.stringify(message));
@@ -50,11 +59,26 @@ class App extends Component {
 
     this.socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      if (data.type === "displayUsers"){
-      this.setState({numOfUsers:this.state.numOfUsers = data})
-      } else {
-      this.setState({messages:this.state.messages.concat(data)});
+
+      switch(data.type){
+        case 'displayUsers':
+          this.setState({numOfUsers:this.state.numOfUsers = data});
+          break;
+        case 'color':
+          this.setState({chosenColor:this.state.chosenColor = data});
+          console.log(this.state.chosenColor.colors);
+          break;
+        case 'incomingMessage':
+          this.setState({messages:this.state.messages.concat(data)});
+          break;
+        case 'incomingNotification':
+          this.setState({messages:this.state.messages.concat(data)});
+          break;
       }
+
+
+
+
     }
   }
 

@@ -11,11 +11,11 @@ class MessageList extends Component {
         <div>
           {
             this.props.messages.map((msg, id) => {
-              if(msg.type === "incomingNotification"){
-              return (<Notification key={id} type={msg.type} content={msg.content}/>);
+              if(msg.type === 'incomingNotification'){
+                return (<Notification key={id} type={msg.type} content={msg.content}/>);
               }
-              if(msg.type === "incomingMessage"){
-              return (<Message key={id} username={msg.username} content={msg.content} />);
+              if(msg.type === 'incomingMessage'){
+                return (<Message key={id} username={msg.username} content={msg.content} colors={msg.colors}/>);
               }
             })
           }
