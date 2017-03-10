@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import MessageList from './MessageList.jsx';
 import ChatBar from './ChatBar.jsx';
+import Showusers from './Showusers.jsx';
 
 
 class App extends Component {
@@ -8,8 +9,9 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentUser: {name: ''}, // optional. if currentUser is not defined, it means the user is Anonymous
-      messages: []
+      currentUser: {name: 'Anonymous'},
+      messages: [],
+      numOfUsers: {}
     };
     this.addNewMsg = this.addNewMsg.bind(this);
     this.sendNotification = this.sendNotification.bind(this);
@@ -48,19 +50,11 @@ class App extends Component {
 
     this.socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log(data.type);
-      console.log(data);
+      if (data.type === "displayUsers"){
+      this.setState({numOfUsers:this.state.numOfUsers = data})
+      } else {
       this.setState({messages:this.state.messages.concat(data)});
-      // switch(data.type) {
-      //   case "incomingMessage":
-      //     this.setState({messages:this.state.messages.concat(data)});
-      //     break;
-      //   case "incomingNotification":
-      //     this.setState({messages:this.state.messages.concat(data)});
-      //     break;
-      //   default:
-      //     throw new Error("Unknown event type " + data.type);
-      // }
+      }
     }
   }
 
@@ -70,8 +64,11 @@ class App extends Component {
       <div>
         <nav className="navbar">
           <a href="/" className="navbar-brand">Chatty</a>
+          <Showusers content={this.state.numOfUsers.content} />
         </nav>
-        <MessageList messages={this.state.messages} />
+        <MessageList
+          messages={this.state.messages}
+        />
         <ChatBar
           currentUser={this.state.currentUser}
           addNewMsg={this.addNewMsg}

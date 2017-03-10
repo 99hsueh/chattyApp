@@ -10,7 +10,7 @@
     }
 
     .chatbar {
-      background: tomato;
+      background: #9916ad;
       border-top: 1px solid black;
       bottom: 0;
       display: flex;
@@ -23,6 +23,7 @@
     .chatbar-message,
     .chatbar-username {
       border: 1px solid black;
+      border-radius: 10px;
       display: block;
       height: 40px;
       line-height: 40px;
@@ -65,8 +66,9 @@
     }
 
     .navbar {
-      background: tomato;
+      background: #9916ad;
       border-bottom: 1px solid black;
+      color: white;
       height: 60px;
       left: 0;
       padding: 0 10px;
@@ -85,6 +87,13 @@
       line-height: 60px;
       padding: 0 10px;
       text-decoration: none;
+    }
+
+    .show-users{
+      float: right;
+      height: 60px;
+      line-height: 60px;
+
     }
 
     h1 {
