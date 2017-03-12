@@ -4,12 +4,11 @@ class Showusers extends Component {
   render() {
   console.log("Rendering <Showusers/>");
     return (
-          <div className="show-users">
-            {this.props.content}
-          </div>
+      <div className="show-users">
+        {this.props.content}
+      </div>
     );
   }
 }
-
 
 export default Showusers;

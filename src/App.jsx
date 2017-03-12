@@ -3,12 +3,6 @@ import MessageList from './MessageList.jsx';
 import ChatBar from './ChatBar.jsx';
 import Showusers from './Showusers.jsx';
 
-
-
-
-
-
-
 class App extends Component {
 
   constructor(props) {
@@ -74,10 +68,6 @@ class App extends Component {
           this.setState({messages:this.state.messages.concat(data)});
           break;
       }
-
-
-
-
     }
   }
 
