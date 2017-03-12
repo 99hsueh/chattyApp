@@ -66,7 +66,6 @@ class App extends Component {
           break;
         case 'color':
           this.setState({chosenColor:this.state.chosenColor = data});
-          console.log(this.state.chosenColor.colors);
           break;
         case 'incomingMessage':
           this.setState({messages:this.state.messages.concat(data)});
